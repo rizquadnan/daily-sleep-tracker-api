@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/db"
+	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/users"
 	"github.com/spf13/viper"
 )
 
@@ -14,14 +15,9 @@ func main() {
 	dbUrl := viper.Get("DB_URL").(string)
 
 	router := gin.Default()
-	db.Init(dbUrl)
+	dbHandler := db.Init(dbUrl)
 
-	router.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"port": port,
-			"dbUrl": dbUrl,
-		})
-	})
+	users.RegisterRoutes(router, dbHandler)
 
 	router.Run(port)
 }
