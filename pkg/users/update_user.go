@@ -1,6 +1,8 @@
 package users
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -8,12 +10,17 @@ import (
 )
 
 type UpdateUserRequestBody struct {
-	Name string `json:"name"`
-	Email string `json:"email"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-func (h handler) UpdateUser (c *gin.Context) {
+func prettyPrint(i interface{}) {
+	s, _ := json.MarshalIndent(i, "", "\t")
+	fmt.Println(string(s))
+}
+
+func (h handler) UpdateUser(c *gin.Context) {
 	id := c.Param("id")
 	body := UpdateUserRequestBody{}
 
@@ -22,6 +29,8 @@ func (h handler) UpdateUser (c *gin.Context) {
 		return
 	}
 
+	prettyPrint(body)
+
 	var user models.User
 
 	if result := h.DB.First(&user, id); result.Error != nil {
@@ -29,11 +38,7 @@ func (h handler) UpdateUser (c *gin.Context) {
 		return
 	}
 
-	user.Name = body.Name
-	user.Email = body.Email
-	user.PasswordHash = body.Password
-
-	h.DB.Save(&user)
+	h.DB.Model(&user).Updates(models.User{Name: body.Name, Email: body.Email, PasswordHash: body.Password})
 
 	c.JSON(http.StatusOK, &user)
 }
