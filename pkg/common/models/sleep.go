@@ -1,10 +1,13 @@
 package models
 
-import "gorm.io/gorm"
-
+import (
+	"gorm.io/datatypes"
+	"gorm.io/gorm"
+)
 type Sleep struct {
 	gorm.Model
-	DATE string `json:"date"`
-	SLEEP_START string `json:"sleep_start"`
-	SLEEP_END string `json:"sleep_end"`
+	DATE datatypes.Date `gorm:"not null"`
+	SLEEP_START datatypes.Time `gorm:"not null"`
+	SLEEP_END datatypes.Time `gorm:"not null"`
+	UserID uint `gorm:"not null"`
 }
