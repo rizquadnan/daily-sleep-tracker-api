@@ -17,5 +17,5 @@ func (h handler) GetUser (c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, &user)
+	c.JSON(http.StatusOK, UserToUserResponse(user))
 }

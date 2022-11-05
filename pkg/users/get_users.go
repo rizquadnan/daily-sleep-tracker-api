@@ -7,7 +7,7 @@ import (
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/models"
 )
 
-func (h handler) GetUsers (c *gin.Context) {
+func (h handler) GetUsers(c *gin.Context) {
 	var users []models.User
 
 	if result := h.DB.Find(&users); result.Error != nil {
@@ -15,5 +15,5 @@ func (h handler) GetUsers (c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, &users)
+	c.JSON(http.StatusOK, UsersToUsersResponse(users))
 }

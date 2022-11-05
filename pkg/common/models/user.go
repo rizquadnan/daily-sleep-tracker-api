@@ -6,8 +6,8 @@ import (
 
 type User struct {
 	gorm.Model
-	Name string `gorm:"not null"`
-	Email string `gorm:"not null"`
-	PasswordHash string `gorm:"not null"`
-	Sleeps []Sleep
+	Name string `gorm:"not null" json:"name"`
+	Email string `gorm:"not null" json:"email"`
+	PasswordHash string `gorm:"not null" json:"passwordHash"`
+	Sleeps []Sleep `json:"sleeps"`
 }

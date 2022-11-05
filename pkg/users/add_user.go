@@ -32,5 +32,5 @@ func (h handler) AddUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, &user)
+	c.JSON(http.StatusCreated, UserToUserResponse(user))
 }

@@ -40,5 +40,5 @@ func (h handler) UpdateUser(c *gin.Context) {
 
 	h.DB.Model(&user).Updates(models.User{Name: body.Name, Email: body.Email, PasswordHash: body.Password})
 
-	c.JSON(http.StatusOK, &user)
+	c.JSON(http.StatusOK, UserToUserResponse(user))
 }
