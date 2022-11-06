@@ -17,4 +17,5 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	routes := r.Group("/sleeps")
 	routes.POST("/", h.AddSleep)
 	routes.GET("/", h.GetSleeps)
+	routes.GET("/:id", h.GetSleep)
 }
