@@ -6,8 +6,8 @@ import (
 )
 type Sleep struct {
 	gorm.Model
-	DATE datatypes.Date `gorm:"not null"`
-	SLEEP_START datatypes.Time `gorm:"not null"`
-	SLEEP_END datatypes.Time `gorm:"not null"`
-	UserID uint `gorm:"not null"`
+	DATE datatypes.Date `gorm:"not null" json:"date"`
+	SLEEP_START datatypes.Time `gorm:"not null" json:"sleepStart"`
+	SLEEP_END datatypes.Time `gorm:"not null" json:"sleepEnd"`
+	UserID uint `gorm:"not null" json:"userId"`
 }
