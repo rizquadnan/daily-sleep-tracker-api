@@ -19,4 +19,5 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	routes.GET("/", h.GetSleeps)
 	routes.GET("/:id", h.GetSleep)
 	routes.PATCH("/:id", h.UpdateSleep)
+	routes.DELETE("/:id", h.DeleteSleep)
 }
