@@ -13,10 +13,9 @@ func main() {
 	viper.ReadInConfig()
 
 	port := viper.Get("PORT").(string)
-	dbUrl := viper.Get("DB_URL").(string)
-
 	router := gin.Default()
-	dbHandler := db.Init(dbUrl)
+	db.Setup()
+	dbHandler := db.GetDB()
 
 	users.RegisterRoutes(router, dbHandler)
 	sleeps.RegisterRoutes(router, dbHandler)

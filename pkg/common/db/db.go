@@ -4,19 +4,27 @@ import (
 	"log"
 
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/models"
+	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func Init(url string) *gorm.DB {
-	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
+var DB *gorm.DB
+func Setup() {
+	dbUrl := viper.Get("DB_URL").(string)
+
+	db, err := gorm.Open(postgres.Open(dbUrl), &gorm.Config{})
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Sleep{})
 
-	return db
+	DB = db;
+}
+
+func GetDB() *gorm.DB {
+	return DB
 }
