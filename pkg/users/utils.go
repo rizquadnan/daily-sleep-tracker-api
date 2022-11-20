@@ -1,6 +1,8 @@
 package users
 
-import "github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/models"
+import (
+	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/models"
+)
 
 func UserToUserResponse(user models.User) map[string]any {
 	return map[string]any{
