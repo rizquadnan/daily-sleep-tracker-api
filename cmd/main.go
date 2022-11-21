@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/auth"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/db"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/sleeps"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/users"
@@ -17,6 +18,7 @@ func main() {
 	db.Setup()
 	dbHandler := db.GetDB()
 
+	auth.RegisterRoutes(router, dbHandler)
 	users.RegisterRoutes(router, dbHandler)
 	sleeps.RegisterRoutes(router, dbHandler)
 
