@@ -16,4 +16,5 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 
 	routes := r.Group("/auth")
 	routes.POST("/register", h.Register)
+	routes.POST("/login", h.Login)
 }
