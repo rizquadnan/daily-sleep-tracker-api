@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/auth"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/db"
@@ -16,6 +17,12 @@ func main() {
 
 	port := viper.Get("PORT").(string)
 	router := gin.Default()
+
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowCredentials = true
+	corsConfig.AllowOrigins = []string{"http://localhost:3000", "http://localhost:3001"}
+	router.Use(cors.New(corsConfig))
+	
 	db.Setup()
 	dbHandler := db.GetDB()
 
