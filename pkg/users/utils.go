@@ -2,6 +2,7 @@ package users
 
 import (
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/models"
+	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/sleeps"
 )
 
 func UserToUserResponse(user models.User) map[string]any {
@@ -9,7 +10,7 @@ func UserToUserResponse(user models.User) map[string]any {
 		"id":     user.ID,
 		"name":   user.Name,
 		"email":  user.Email,
-		"sleeps": user.Sleeps,
+		"sleeps": sleeps.SleepsToSleepsResponse(user.Sleeps),
 	}
 }
 

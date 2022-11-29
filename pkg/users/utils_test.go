@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/models"
+	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/sleeps"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
@@ -57,7 +58,7 @@ func TestUserToUserEmptySleepResponse(t *testing.T) {
 			"id":     uint(11),
 			"name":   "testName",
 			"email":  "testEmail",
-			"sleeps": []models.Sleep{},
+			"sleeps": sleeps.SleepsToSleepsResponse([]models.Sleep{}),
 		},
 		"Wrong return value")
 }
@@ -112,13 +113,13 @@ func TestUsersToUsersResponse(t *testing.T) {
 				"id":     uint(1),
 				"name":   "name1",
 				"email":  "email1",
-				"sleeps": []models.Sleep{sleep1},
+				"sleeps": sleeps.SleepsToSleepsResponse([]models.Sleep{sleep1}),
 			},
 			{
 				"id":     uint(2),
 				"name":   "name2",
 				"email":  "email2",
-				"sleeps": []models.Sleep{sleep2},
+				"sleeps": sleeps.SleepsToSleepsResponse([]models.Sleep{sleep2}),
 			},
 		},
 		"Wrong return value",

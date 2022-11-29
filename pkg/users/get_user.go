@@ -12,7 +12,7 @@ func (h handler) GetUser (c *gin.Context) {
 
 	var user models.User
 
-	if result := h.DB.First(&user, id); result.Error != nil {
+	if result := h.DB.Model(models.User{}).Preload("Sleeps").First(&user, id); result.Error != nil {
 		c.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
