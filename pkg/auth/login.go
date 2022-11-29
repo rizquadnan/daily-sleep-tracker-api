@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/models"
+	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/users"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -41,5 +42,5 @@ func (h handler) Login (c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	c.JSON(http.StatusOK, gin.H{"token": token, "user": users.UserToUserResponse(user)})
 }
