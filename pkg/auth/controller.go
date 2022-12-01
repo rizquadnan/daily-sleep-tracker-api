@@ -9,12 +9,12 @@ type handler struct {
 	DB *gorm.DB
 }
 
-func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
+func RegisterRoutes(apiRoutes *gin.RouterGroup, db *gorm.DB) {
 	h := handler{
 		DB: db,
 	}
 
-	routes := r.Group("/auth")
+	routes := apiRoutes.Group("/auth")
 	routes.POST("/register", h.Register)
 	routes.POST("/login", h.Login)
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/auth"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/db"
@@ -16,21 +15,20 @@ func main() {
 	viper.ReadInConfig()
 
 	port := viper.Get("PORT").(string)
-	router := gin.Default()
-
-	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowCredentials = true
-	corsConfig.AllowOrigins = []string{"http://localhost:3000", "http://localhost:3001"}
-	router.Use(cors.New(corsConfig))
 	
+	router := gin.Default()
+	router.Use(middlewares.CorsMiddleware())
+	apiRoutes := router.Group("/api/v1")
+
 	db.Setup()
 	dbHandler := db.GetDB()
 
-	auth.RegisterRoutes(router, dbHandler)
+	auth.RegisterRoutes(apiRoutes, dbHandler)
 
-	router.Use(middlewares.JwtAuthMiddleware())
-	users.RegisterRoutes(router, dbHandler)
-	sleeps.RegisterRoutes(router, dbHandler)
+	apiRoutes.Use(middlewares.JwtAuthMiddleware())
+	
+	users.RegisterRoutes(apiRoutes, dbHandler)
+	sleeps.RegisterRoutes(apiRoutes, dbHandler)
 
 	router.Run(port)
 }
