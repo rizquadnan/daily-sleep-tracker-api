@@ -1,6 +1,7 @@
 package sleeps
 
 import (
+	"math"
 	"net/http"
 	"strconv"
 	"strings"
@@ -62,6 +63,22 @@ func (h handler) AddSleep(c *gin.Context) {
 		return
 	}
 	sleep.SLEEP_END = datatypes.NewTime(sleepEndHour, sleepEndMinutes, 0, 0)
+
+	sleepStartInRFC := body.DATE + "T" + body.SLEEP_START + ":00" + "Z";
+	sleepStartInTime, errInStartParse := time.Parse(time.RFC3339, sleepStartInRFC)
+	if (errInStartParse != nil) {
+		c.AbortWithError(http.StatusBadRequest, errInStartParse)
+	}
+
+	sleepEndDate := date.AddDate(0, 0, 1)
+	sleepEndInRFC := sleepEndDate.Format(dateFormat) + "T" + body.SLEEP_END + ":00" + "Z";
+	sleepEndInTime, errInEndParse := time.Parse(time.RFC3339, sleepEndInRFC)
+	if (errInEndParse != nil) {
+		c.AbortWithError(http.StatusBadRequest, errInEndParse)
+	}
+
+	sleepTimeDiff := sleepEndInTime.Sub(sleepStartInTime)
+	sleep.SLEEP_DURATION = int(math.Floor(sleepTimeDiff.Minutes()))
 
 	var user models.User
 	if result := h.DB.First(&user, body.UserID); result.Error != nil {
