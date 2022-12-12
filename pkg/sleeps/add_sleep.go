@@ -16,7 +16,7 @@ type AddSleepRequestBody struct {
 	DATE string `json:"date"`
 	SLEEP_START string `json:"sleepStart"`
 	SLEEP_END string `json:"sleepEnd"`
-	UserID string `json:"userId"`
+	UserID int `json:"userId"`
 }
 
 const dateFormat = "2006-01-02";
@@ -85,12 +85,7 @@ func (h handler) AddSleep(c *gin.Context) {
 		c.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
-	userId, err := strconv.Atoi(body.UserID)
-	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
-		return
-	}
-	sleep.UserID = uint(userId)
+	sleep.UserID = uint(body.UserID)
 
 	if result := h.DB.Create(&sleep); result.Error != nil {
 		c.AbortWithError(http.StatusNotFound, result.Error)
