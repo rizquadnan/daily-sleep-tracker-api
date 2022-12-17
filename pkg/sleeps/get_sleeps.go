@@ -11,15 +11,16 @@ import (
 )
 
 type Pagination struct {
-	getTotalPage func(totalRows int64) int
-	totalRows    int64
+	getTotalPage  func(totalRows int64) int
+	totalRows     int64
+	hasPagination bool
 }
 
 func SetupPagination(c *gin.Context, h handler) (func(db *gorm.DB) *gorm.DB, Pagination) {
 	if c.Query("page") == "" || c.Query("page_size") == "" {
 		return func(db *gorm.DB) *gorm.DB {
 			return db
-		}, Pagination{totalRows: 0}
+		}, Pagination{totalRows: 0, hasPagination: false}
 	}
 
 	page, _ := strconv.Atoi(c.Query("page"))
@@ -43,7 +44,7 @@ func SetupPagination(c *gin.Context, h handler) (func(db *gorm.DB) *gorm.DB, Pag
 
 	return paginator, Pagination{getTotalPage: func(totalRows int64) int {
 		return int(math.Ceil(float64(totalRows) / float64(pageSize)))
-	}, totalRows: 0}
+	}, totalRows: 0, hasPagination: true}
 }
 
 func (h handler) GetSleeps(c *gin.Context) {
@@ -71,9 +72,13 @@ func (h handler) GetSleeps(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"totalRows": pagination.totalRows,
-		"totalPage": pagination.getTotalPage(pagination.totalRows),
-		"rows":      SleepsToSleepsResponse(sleeps)},
-	)
+	if pagination.hasPagination {
+		c.JSON(http.StatusOK, gin.H{
+			"totalRows": pagination.totalRows,
+			"totalPage": pagination.getTotalPage(pagination.totalRows),
+			"rows":      SleepsToSleepsResponse(sleeps)},
+		)
+	} else {
+		c.JSON(http.StatusOK, gin.H{"rows": SleepsToSleepsResponse(sleeps)})
+	}
 }
