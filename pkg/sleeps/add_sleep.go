@@ -1,7 +1,6 @@
 package sleeps
 
 import (
-	"math"
 	"net/http"
 	"strconv"
 	"strings"
@@ -78,7 +77,7 @@ func (h handler) AddSleep(c *gin.Context) {
 	}
 
 	sleepTimeDiff := sleepEndInTime.Sub(sleepStartInTime)
-	sleep.SLEEP_DURATION = int(math.Floor(sleepTimeDiff.Minutes()))
+	sleep.SLEEP_DURATION = int(sleepTimeDiff.Minutes())
 
 	var user models.User
 	if result := h.DB.First(&user, body.UserID); result.Error != nil {
