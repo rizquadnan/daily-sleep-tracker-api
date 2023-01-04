@@ -1,20 +1,26 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/auth"
+	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/config"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/db"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/middlewares"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/sleeps"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/users"
-	"github.com/spf13/viper"
 )
 
 func main() {
-	viper.SetConfigFile("./pkg/common/envs/.env")
-	viper.ReadInConfig()
+	err := config.InitConfig()
+	if err != nil {
+		panic(fmt.Errorf("error initializing config file: %w", err))
+	}
 
-	port := viper.Get("PORT").(string)
+	config := config.GetConfig()
+
+	port := config.PORT
 	
 	router := gin.Default()
 	router.Use(middlewares.CorsMiddleware())
@@ -26,7 +32,7 @@ func main() {
 	auth.RegisterRoutes(apiRoutes, dbHandler)
 
 	apiRoutes.Use(middlewares.JwtAuthMiddleware())
-	
+
 	users.RegisterRoutes(apiRoutes, dbHandler)
 	sleeps.RegisterRoutes(apiRoutes, dbHandler)
 

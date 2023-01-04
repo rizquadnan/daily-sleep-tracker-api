@@ -1,26 +1,59 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"fmt"
+	"log"
+	"os"
+	"strconv"
+
+	"github.com/joho/godotenv"
+)
 
 type Config struct {
-	Port string `mapstructure:"PORT"`
-	DBUrl string `mapstructure:"DB_URL"`
+	PORT            string
+	DB_URL          string
+	API_SECRET      string
+	TOKEN_LIFE_SPAN int
 }
 
-func LoadConfig() (c Config, err error) {
-	viper.AddConfigPath("./pkg/common/config/envs")
-	viper.SetConfigName("dev")
-	viper.SetConfigType("env")
+func InitConfig() error {
+	var err error
 
-	viper.AutomaticEnv()
+	wd, _ := os.Getwd()
+	fmt.Println("wd:")
+	fmt.Println(wd);
+	fmt.Println("")
 
-	err = viper.ReadInConfig()
-
-	if err != nil {
-		return
+	if err = godotenv.Load("./config.env"); err != nil {
+		log.Print("No .env file found")
 	}
 
-	err = viper.Unmarshal(&c)
+	return err
+}
 
-	return
+func GetConfig() *Config {
+	return &Config{
+		PORT:            getEnvAsString("PORT", ""),
+		DB_URL:          getEnvAsString("DB_URL", ""),
+		API_SECRET:      getEnvAsString("API_SECRET", ""),
+		TOKEN_LIFE_SPAN: getEnvAsInt("TOKEN_LIFE_SPAN", 1),
+	}
+}
+
+func getEnvAsString(key, defaultVal string) string {
+	if value, isExists := os.LookupEnv(key); isExists {
+		return value
+	} else {
+		return defaultVal
+	}
+}
+
+func getEnvAsInt(key string, defaultVal int) int {
+	valueStr := getEnvAsString(key, "")
+
+	if value, err := strconv.Atoi(valueStr); err == nil {
+		return value
+	} else {
+		return defaultVal
+	}
 }

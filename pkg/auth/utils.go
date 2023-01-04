@@ -2,13 +2,12 @@ package auth
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
+	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/config"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -27,12 +26,10 @@ func verifyPassword(password, hashedPassword string) error {
 }
 
 func generateToken(userId uint) (string, error) {
-	tokenLifeSpan, err := strconv.Atoi(viper.Get("TOKEN_LIFE_SPAN").(string))
-	apiSecret := viper.Get("API_SECRET").(string)
+	config := config.GetConfig()
 
-	if err != nil {
-		return "", err
-	}
+	tokenLifeSpan := config.TOKEN_LIFE_SPAN
+	apiSecret := config.API_SECRET
 
 	claims := jwt.MapClaims{}
 
