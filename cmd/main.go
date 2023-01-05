@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/auth"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/config"
@@ -13,10 +11,7 @@ import (
 )
 
 func main() {
-	err := config.InitConfig()
-	if err != nil {
-		panic(fmt.Errorf("error initializing config file: %w", err))
-	}
+	config.InitConfig()
 
 	config := config.GetConfig()
 
