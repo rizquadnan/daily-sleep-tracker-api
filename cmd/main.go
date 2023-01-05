@@ -31,5 +31,5 @@ func main() {
 	users.RegisterRoutes(apiRoutes, dbHandler)
 	sleeps.RegisterRoutes(apiRoutes, dbHandler)
 
-	router.Run(port)
+	router.Run(":" + port)
 }
