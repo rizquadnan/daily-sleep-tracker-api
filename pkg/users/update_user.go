@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/models"
+	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/utils"
 )
 
 type UpdateUserRequestBody struct {
@@ -25,7 +26,8 @@ func (h handler) UpdateUser(c *gin.Context) {
 	body := UpdateUserRequestBody{}
 
 	if err := c.BindJSON(&body); err != nil {
-		c.AbortWithError(http.StatusNotFound, err)
+		utils.SetBadRequestJSON(c, "")
+		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
@@ -34,6 +36,7 @@ func (h handler) UpdateUser(c *gin.Context) {
 	var user models.User
 
 	if result := h.DB.First(&user, id); result.Error != nil {
+		utils.SetStatusNotFoundJSON(c, "")
 		c.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
