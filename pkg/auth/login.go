@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/models"
+	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/utils"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/users"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -26,19 +27,19 @@ func (h handler) Login (c *gin.Context) {
 	user := models.User{}
 	err := h.DB.Model(models.User{}).Where("email = ?", body.Email).Take(&user).Error
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "email or password not found"})
+		c.JSON(http.StatusNotFound, utils.GenerateErrorResponse("Email or password not found", http.StatusNotFound))
 		return 
 	}
 
 	if verifyPassword(body.Password, user.PasswordHash) == bcrypt.ErrMismatchedHashAndPassword {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "email or password not found"})
+		c.JSON(http.StatusNotFound, utils.GenerateErrorResponse("Email or password not found", http.StatusNotFound))
 		return
 	}
 
 	token, err := generateToken(user.ID)
 	if err != nil {
 		fmt.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Sorry failed to login, please try again"})
+		c.JSON(http.StatusInternalServerError, utils.GenerateErrorResponse("Sorry failed to login, please try again", http.StatusInternalServerError))
 		return
 	}
 
