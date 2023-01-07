@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/constant"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/models"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/utils"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/users"
@@ -12,15 +13,15 @@ import (
 )
 
 type LoginBody struct {
-	Email string `json:"email" binding:"required"`
+	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
-func (h handler) Login (c *gin.Context) {
+func (h handler) Login(c *gin.Context) {
 	var body LoginBody
 
 	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, utils.GenerateErrorResponse(constant.GENERIC_NOT_VALID_PAYLOAD, http.StatusBadRequest))
 		return
 	}
 
@@ -28,7 +29,7 @@ func (h handler) Login (c *gin.Context) {
 	err := h.DB.Model(models.User{}).Where("email = ?", body.Email).Take(&user).Error
 	if err != nil {
 		c.JSON(http.StatusNotFound, utils.GenerateErrorResponse("Email or password not found", http.StatusNotFound))
-		return 
+		return
 	}
 
 	if verifyPassword(body.Password, user.PasswordHash) == bcrypt.ErrMismatchedHashAndPassword {
