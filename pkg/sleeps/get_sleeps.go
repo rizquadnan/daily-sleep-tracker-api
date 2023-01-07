@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/models"
+	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/utils"
 	"gorm.io/gorm"
 )
 
@@ -56,18 +57,21 @@ func (h handler) GetSleeps(c *gin.Context) {
 	if userId == "" {
 		h.DB.Model(models.Sleep{}).Count(&pagination.totalRows)
 		if result := h.DB.Scopes(paginator).Find(&sleeps); result.Error != nil {
-			c.AbortWithError(http.StatusNotFound, result.Error)
+			utils.SetInternalServerErrorJSON(c, "")
+			c.AbortWithError(http.StatusInternalServerError, result.Error)
 			return
 		}
 	} else {
 		userIdInt, err := strconv.Atoi(userId)
 		if err != nil {
+			utils.SetBadRequestJSON(c, "")
 			c.AbortWithError(http.StatusBadRequest, err)
 		}
 
 		h.DB.Model(models.Sleep{}).Where(models.Sleep{UserID: uint(userIdInt)}).Count(&pagination.totalRows)
 		if result := h.DB.Where(models.Sleep{UserID: uint(userIdInt)}).Scopes(paginator).Find(&sleeps); result.Error != nil {
-			c.AbortWithError(http.StatusNotFound, result.Error)
+			utils.SetInternalServerErrorJSON(c, "")
+			c.AbortWithError(http.StatusInternalServerError, result.Error)
 			return
 		}
 	}
