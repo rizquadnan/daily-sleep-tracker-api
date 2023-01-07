@@ -16,6 +16,16 @@ func GenerateErrorResponse(message string, statusCode int) ErrorResponse {
 	return ErrorResponse{ Message: message, StatusCode: statusCode }
 }
 
+func SetStatusNotFound(c *gin.Context, customMessage string) {
+	var message string
+
+	if (customMessage == "") {
+		message = constant.GENERIC_NOT_FOUND
+	}
+
+	c.JSON(http.StatusNotFound, GenerateErrorResponse(message, http.StatusNotFound))
+}
+
 func SetBadRequestJSON(c *gin.Context, customMessage string) {
 	var message string
 

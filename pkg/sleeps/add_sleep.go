@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/models"
+	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/utils"
 	"gorm.io/datatypes"
 )
 
@@ -24,6 +25,7 @@ func (h handler) AddSleep(c *gin.Context) {
 	body := AddSleepRequestBody{}
 
 	if err := c.BindJSON(&body); err != nil {
+		utils.SetBadRequestJSON(c, "")
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
@@ -32,6 +34,7 @@ func (h handler) AddSleep(c *gin.Context) {
 
 	date, err := time.Parse(dateFormat, body.DATE)
 	if (err != nil) {
+		utils.SetBadRequestJSON(c, "")
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
@@ -40,11 +43,13 @@ func (h handler) AddSleep(c *gin.Context) {
 	sleepStartArray := strings.Split(body.SLEEP_START, ":")
 	sleepStartHour, err := strconv.Atoi(sleepStartArray[0])
 	if err != nil {
+		utils.SetBadRequestJSON(c, "")
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 	sleepStartMinutes, err := strconv.Atoi(sleepStartArray[1])
 	if err != nil {
+		utils.SetBadRequestJSON(c, "")
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
@@ -53,11 +58,13 @@ func (h handler) AddSleep(c *gin.Context) {
 	sleepEndArray := strings.Split(body.SLEEP_END, ":")
 	sleepEndHour, err := strconv.Atoi(sleepEndArray[0])
 	if err != nil {
+		utils.SetBadRequestJSON(c, "")
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 	sleepEndMinutes, err := strconv.Atoi(sleepEndArray[1])
 	if err != nil {
+		utils.SetBadRequestJSON(c, "")
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
@@ -66,6 +73,7 @@ func (h handler) AddSleep(c *gin.Context) {
 	sleepStartInRFC := body.DATE + "T" + body.SLEEP_START + ":00" + "Z";
 	sleepStartInTime, errInStartParse := time.Parse(time.RFC3339, sleepStartInRFC)
 	if (errInStartParse != nil) {
+		utils.SetBadRequestJSON(c, "")
 		c.AbortWithError(http.StatusBadRequest, errInStartParse)
 	}
 
@@ -73,6 +81,7 @@ func (h handler) AddSleep(c *gin.Context) {
 	sleepEndInRFC := sleepEndDate.Format(dateFormat) + "T" + body.SLEEP_END + ":00" + "Z";
 	sleepEndInTime, errInEndParse := time.Parse(time.RFC3339, sleepEndInRFC)
 	if (errInEndParse != nil) {
+		utils.SetBadRequestJSON(c, "")
 		c.AbortWithError(http.StatusBadRequest, errInEndParse)
 	}
 
@@ -81,13 +90,15 @@ func (h handler) AddSleep(c *gin.Context) {
 
 	var user models.User
 	if result := h.DB.First(&user, body.UserID); result.Error != nil {
-		c.AbortWithError(http.StatusNotFound, result.Error)
+		utils.SetBadRequestJSON(c, "")
+		c.AbortWithError(http.StatusBadRequest, result.Error)
 		return
 	}
 	sleep.UserID = uint(body.UserID)
 
 	if result := h.DB.Create(&sleep); result.Error != nil {
-		c.AbortWithError(http.StatusNotFound, result.Error)
+		utils.SetInternalServerErrorJSON(c, "")
+		c.AbortWithError(http.StatusInternalServerError, result.Error)
 		return
 	}
 
