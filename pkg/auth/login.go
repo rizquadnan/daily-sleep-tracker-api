@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/constant"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/models"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/common/utils"
 	"github.com/rizquadnan/daily-sleep-tracker-api/pkg/users"
@@ -21,7 +20,7 @@ func (h handler) Login(c *gin.Context) {
 	var body LoginBody
 
 	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, utils.GenerateErrorResponse(constant.GENERIC_NOT_VALID_PAYLOAD, http.StatusBadRequest))
+		utils.SetBadRequestJSON(c, "")
 		return
 	}
 
@@ -40,7 +39,7 @@ func (h handler) Login(c *gin.Context) {
 	token, err := generateToken(user.ID)
 	if err != nil {
 		fmt.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, utils.GenerateErrorResponse("Sorry failed to login, please try again", http.StatusInternalServerError))
+		utils.SetInternalServerErrorJSON(c, "Sorry failed to login, please try again")
 		return
 	}
 
