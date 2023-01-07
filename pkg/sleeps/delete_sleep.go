@@ -14,7 +14,7 @@ func (h handler) DeleteSleep(c *gin.Context) {
 	var sleep models.Sleep
 
 	if result := h.DB.First(&sleep, id); result.Error != nil {
-		utils.SetStatusNotFound(c, "")
+		utils.SetStatusNotFoundJSON(c, "")
 		c.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}

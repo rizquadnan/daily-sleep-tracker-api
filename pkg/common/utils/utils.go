@@ -16,7 +16,7 @@ func GenerateErrorResponse(message string, statusCode int) ErrorResponse {
 	return ErrorResponse{ Message: message, StatusCode: statusCode }
 }
 
-func SetStatusNotFound(c *gin.Context, customMessage string) {
+func SetStatusNotFoundJSON(c *gin.Context, customMessage string) {
 	var message string
 
 	if (customMessage == "") {
