@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -18,11 +17,6 @@ type Config struct {
 
 func InitConfig() error {
 	var err error
-
-	wd, _ := os.Getwd()
-	fmt.Println("wd:")
-	fmt.Println(wd);
-	fmt.Println("")
 
 	if err = godotenv.Load("./config.env"); err != nil {
 		log.Print("No .env file found")
