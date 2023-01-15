@@ -11,6 +11,9 @@ Service to power a Frontend Web App to track sleep statistics
 - Docker 
 - Railway: https://railway.app/
 
+# Documentation
+https://documenter.getpostman.com/view/22977269/2s8ZDU4P9h
+
 # How to run locally (for developers)
 ## Prerequiste
 1. Install go
