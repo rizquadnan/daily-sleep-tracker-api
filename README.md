@@ -1,5 +1,9 @@
 # Daily Sleep Tracker API
-Service to power a Frontend Web App to track sleep statistics
+Service to power a Frontend Web App to track sleep statistics: Functionality:
+1. CRUD User
+2. CRUD Sleep
+3. User authentication
+4. Password encryptions
 
 # Built with
 - Go
